@@ -1,31 +1,27 @@
+
 from datetime import datetime
 import torch
 import os
 import sys
-if os.path.dirname(os.path.abspath(__file__)) not in sys.path:
-    sys.path.append(os.path.dirname(os.path.abspath(__file__)))   
 from scripts import util
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 #%% varriables for training
-istrain = False
+istrain = True
 batch_size =128
 epoch = 7000
-run_num = 2
-filter_max = 100
+run_num = 1
 
-path_root = os.path.dirname(os.path.abspath(__file__))
-path_model = path_root + "/model_saved/" ## models are saved in this directory which will also be used for pep generation 
-path_model = "/media/anupkumar/Backup Plus/project/ML_project/pytorch_AMP_BiGAN/W_BiGAN_GP_monash/model_saved_231206/"
+path_model = "/Users/mohamedshanil/Desktop/iitb_ML_project/bigan-pep-test/W_BiGAN_GP/model_saved/"
 if not os.path.exists(path_model):
     os.makedirs(path_model)
 path_result = path_model + "/results_" + str(run_num)+  "_backup/"  ### analysis output dir
 if not os.path.exists(path_result):
     os.makedirs(path_result)
-    
+
 ## training data path
-path_data = "/media/anupkumar/Backup Plus/project/ML_project/data_master/" # root for training data
-fasta_AMPs = [path_data+"amps/dbaasp/dbaasp_APR_processed.fasta"]   
-fasta_AMYs =[path_data+"amyloid/amys_uniqueAI4AMP_processedtotrain.fasta"]
+path_data = "/Users/mohamedshanil/Desktop/iitb_ML_project/bigan-pep-test/data_master/" # root for training data
+fasta_AMPs = ["/Users/mohamedshanil/Desktop/iitb_ML_project/bigan-pep-test/data_master/amps/dbaasp/dbaasp_APR_processed.fasta"]
+fasta_AMYs =["/Users/mohamedshanil/Desktop/iitb_ML_project/bigan-pep-test/data_master/amyloid/amyloid-combined.fasta"]
 #%% other varriables for analysis
 ## for analysis.py
 batch_generate =1000
@@ -60,17 +56,17 @@ dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle
 from models_nn import train
 if istrain == True:
     start_time = datetime.now().strftime("%H:%M:%S")
-            
-    G, loss_all, collected_seqs = train.training(path_model, epoch = epoch, filter_max= filter_max, train_data=dataloader, run_num = run_num)
-    
+
+    G, loss_all, collected_seqs = train.training(path_model, epoch = epoch, train_data=dataloader, run_num = run_num)
+
     finish_time = datetime.now().strftime("%H:%M:%S")
     print("Current Time = {} \n Finish Time = {}".format(start_time, finish_time))
 #%% model summary
 # from models_nn import train
-# train.models_summary(filter_max, path_model)
-#%%analysis
+# train.models_summary(path_model)
 
-from scripts import analysis_generated_seqs
+# #%%analysis
+
 
 
 

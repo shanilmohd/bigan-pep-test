@@ -68,7 +68,7 @@ def training(path_model, epoch, train_data=None, batch_size= 128, run_num = None
     G.apply(model.weights_init)
     D.apply(model.init_weights)
     collected_seqs = {}
-    table = util.get_conversion_table("/Users/mohamedshanil/Desktop/iitb_ML_project/bigan-pep-test/data_master/physical_chemical_6.txt")
+    table = util.get_conversion_table("/content/bigan-pep-test/data_master/physical_chemical_6.txt")
     optimizer_EG = torch.optim.Adam(list(E.parameters()) + list(G.parameters()), 
                                     lr=2e-5, betas=(0.5, 0.999), weight_decay=1e-5)
     optimizer_D = torch.optim.Adam(D.parameters(), 
@@ -157,7 +157,7 @@ def training(path_model, epoch, train_data=None, batch_size= 128, run_num = None
                 G = G.cpu()
                 z = z.cpu()
                 generated_seqs = util.generate_seqs(G, table, z, epoch)
-                G=G.cpu()
+                G=G.cuda()
                 collected_seqs[epoch] = generated_seqs
                 util.write_fasta(generated_seqs, os.path.join(path_model, "final_generated_seq.fasta"))
                 D.train()
